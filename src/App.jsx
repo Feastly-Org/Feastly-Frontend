@@ -1,7 +1,8 @@
 import "./App.css";
+import DailyLogPage from "./pages/DailyLogPage";
 
 function App() {
-  return <></>;
+  return <DailyLogPage />;
 }
 
 export default App;
