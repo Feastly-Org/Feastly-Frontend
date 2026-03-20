@@ -8,16 +8,24 @@ import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Avatar } from "@mui/material";
+import { useAuth } from "../auth/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  // add token conditionals
-  const pages = [
-    { label: "Dashboard", path: "/" },
-    { label: "Login", path: "/login" },
-    { label: "Register", path: "/register" },
-    { label: "Logout", path: "/logout" },
-  ];
+  const { token } = useAuth();
+  let pages = [];
+  // token conditionals
+  token
+    ? (pages = [
+        { label: "Dashboard", path: "/" },
+        { label: "Logout", path: "/logout" },
+      ])
+    : (pages = [
+        { label: "Dashboard", path: "/" },
+        { label: "Login", path: "/login" },
+        { label: "Register", path: "/register" },
+      ]);
+
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -52,11 +60,14 @@ export default function Navbar() {
             </Button>
           ))}
         </Box>
-        <Tooltip title="Open account settings">
-          <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
-            <Avatar />
-          </IconButton>
-        </Tooltip>
+        {token && (
+          <Tooltip title="Open account settings">
+            <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
+              <Avatar />
+              {/* If the user is logged in, display mui's default avatar */}
+            </IconButton>
+          </Tooltip>
+        )}
       </Toolbar>
     </AppBar>
   );
