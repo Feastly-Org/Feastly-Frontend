@@ -8,7 +8,7 @@ import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
 import { useNavigate } from "react-router";
 import { Avatar } from "@mui/material";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();

@@ -1,23 +1,23 @@
 import { useState } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../auth/AuthContext.jsx";
 import { Box, Typography, TextField, Button, Alert } from "@mui/material";
 import { useNavigate } from "react-router";
 
 /** A form that allows users to log into an existing account. */
-export default function LoginPage() {
-  const { login } = useAuth();
+export default function RegisterPage() {
+  const { register } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
 
-  const tryLogin = async (event, formData) => {
+  const tryRegister = async (event, formData) => {
     event.preventDefault();
     setError(null);
 
     const email = formData.email;
     const password = formData.password;
     try {
-      await login({ email, password });
+      await register({ email, password });
       navigate("/");
     } catch (e) {
       setError(e.message);
@@ -58,7 +58,7 @@ export default function LoginPage() {
               alignItems: "center",
             }}
           >
-            Login to an account
+            Create an account
           </Typography>
         </Box>
 
@@ -97,16 +97,12 @@ export default function LoginPage() {
             variant="contained"
             fullWidth
             size="large"
-            onClick={(e) => tryLogin(e, formData)}
+            onClick={(e) => tryRegister(e, formData)}
           >
-            Login
+            Register
           </Button>
-          <Button
-            variant="text"
-            fullWidth
-            onClick={() => navigate("/register")}
-          >
-            Don't have an account? Click here.
+          <Button variant="text" fullWidth onClick={() => navigate("/login")}>
+            Have an account? Click here to login.
           </Button>
         </Box>
       </Box>

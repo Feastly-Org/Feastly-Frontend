@@ -1,16 +1,20 @@
 import "./App.css";
-import Layout from "./layout/Layout.jsx";
+import Layout from "./components/layout/Layout.jsx";
 import { Route, Routes } from "react-router";
-import LoginPage from "./auth/Login.jsx";
-import RegisterPage from "./auth/Register.jsx";
-import LogoutPage from "./auth/Logout.jsx";
-import Error404 from "./Error404.jsx";
-
+import LoginPage from "./pages/Login.jsx";
+import RegisterPage from "./pages/Register.jsx";
+import LogoutPage from "./pages/Logout.jsx";
+import Error404 from "./pages/Error404.jsx";
+import DailyLogPage from "./pages/DailyLogPage.jsx";
+import { useAuth } from "./auth/AuthContext.jsx";
+import RequireLogin from "./components/RequireLogin.jsx";
 function App() {
+  const { token } = useAuth();
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<></>} /> {/* TODO */}
+        <Route index element={token ? <DailyLogPage /> : <RequireLogin />} />{" "}
+        {/* TODO */}
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/logout" element={<LogoutPage />}></Route>
