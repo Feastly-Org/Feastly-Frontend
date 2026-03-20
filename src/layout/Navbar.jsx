@@ -69,7 +69,6 @@ export default function Navbar() {
           </Tooltip>
         )}
       </Toolbar>
-      )
     </AppBar>
   );
 }
