@@ -60,13 +60,15 @@ export default function Navbar() {
             </Button>
           ))}
         </Box>
+        token && (
         <Tooltip title="Open account settings">
           <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
-            {token && <Avatar />}
+            <Avatar />
             {/* If the user is logged in, display mui's default avatar */}
           </IconButton>
         </Tooltip>
       </Toolbar>
+      )
     </AppBar>
   );
 }
