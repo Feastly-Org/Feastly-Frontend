@@ -14,7 +14,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { token } = useAuth();
   let pages = [];
-  // add token conditionals
+  // token conditionals
   token
     ? (pages = [
         { label: "Dashboard", path: "/" },
@@ -63,7 +63,8 @@ export default function Navbar() {
         </Box>
         <Tooltip title="Open account settings">
           <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
-            {token && <Avatar />}
+            {token && <Avatar />}{" "}
+            {/* If the user is logged in, display mui's default avatar */}
           </IconButton>
         </Tooltip>
       </Toolbar>
