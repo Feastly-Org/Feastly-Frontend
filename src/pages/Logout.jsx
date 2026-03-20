@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../auth/AuthContext.jsx";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { Link, useNavigate } from "react-router";
 import { LinearProgress } from "@mui/material";
