@@ -58,7 +58,7 @@ export default function LoginPage() {
               alignItems: "center",
             }}
           >
-            Login to your account
+            Login to an account
           </Typography>
         </Box>
 
