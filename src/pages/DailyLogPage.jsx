@@ -1,11 +1,28 @@
 import { useState } from "react";
 import MealSection from "../components/MealSection";
+import "../App.css";
 
 const MEAL_SECTIONS = [
-  { key: "breakfast", title: "Breakfast", description: "Start the day with your first meal." },
-  { key: "lunch", title: "Lunch", description: "Track your midday meals and quick bites." },
-  { key: "dinner", title: "Dinner", description: "Keep your evening meals in one place." },
-  { key: "snacks", title: "Snacks", description: "Log everything in between the main meals." },
+  {
+    key: "breakfast",
+    title: "Breakfast",
+    description: "Start the day with your first meal.",
+  },
+  {
+    key: "lunch",
+    title: "Lunch",
+    description: "Track your midday meals and quick bites.",
+  },
+  {
+    key: "dinner",
+    title: "Dinner",
+    description: "Keep your evening meals in one place.",
+  },
+  {
+    key: "snacks",
+    title: "Snacks",
+    description: "Log everything in between the main meals.",
+  },
 ];
 
 const SAVED_MEALS = [
@@ -19,46 +36,96 @@ const SAVED_MEALS = [
   { id: "meal-8", name: "Apple with Peanut Butter", mealType: "snacks" },
 ];
 
-export default function DailyLogPage() {
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0],
-  );
-  const [dailyMeals, setDailyMeals] = useState({
+function createEmptyDayMeals() {
+  return {
     breakfast: [],
     lunch: [],
     dinner: [],
     snacks: [],
-  });
-  const [savedMeals] = useState(SAVED_MEALS);
-  const [activeMealType, setActiveMealType] = useState(null);
+  };
+}
 
-  const handleOpenMealPicker = (mealType) => {
-    setActiveMealType(mealType);
+function formatDateKey(date) {
+  return date.toISOString().split("T")[0];
+}
+
+function getStartOfWeek(dateString) {
+  const date = new Date(`${dateString}T12:00:00`);
+  const dayOfWeek = date.getDay();
+  const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  date.setDate(date.getDate() + offset);
+
+  return date;
+}
+
+function buildWeekDays(dateString) {
+  const startOfWeek = getStartOfWeek(dateString);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + index);
+
+    return {
+      key: formatDateKey(date),
+      label: date.toLocaleDateString("en-US", { weekday: "long" }),
+      shortDate: date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+    };
+  });
+}
+
+export default function DailyLogPage() {
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+  const [weeklyMeals, setWeeklyMeals] = useState({});
+  const [savedMeals] = useState(SAVED_MEALS);
+  const [activeSelection, setActiveSelection] = useState(null);
+
+  const weekDays = buildWeekDays(selectedDate);
+
+  const handleOpenMealPicker = (dateKey, mealType) => {
+    setActiveSelection({ dateKey, mealType });
   };
 
   const handleCloseMealPicker = () => {
-    setActiveMealType(null);
+    setActiveSelection(null);
   };
 
-  const handleSelectMeal = (mealType, meal) => {
-    setDailyMeals((currentMeals) => {
+  const handleSelectMeal = (dateKey, mealType, meal) => {
+    setWeeklyMeals((currentMeals) => {
+      const mealsForDay = currentMeals[dateKey] ?? createEmptyDayMeals();
+
       return {
         ...currentMeals,
-        [mealType]: [
-          ...currentMeals[mealType],
-          {
-            id: `${meal.id}-${Date.now()}`,
-            name: meal.name,
-          },
-        ],
+        [dateKey]: {
+          ...mealsForDay,
+          [mealType]: [
+            ...mealsForDay[mealType],
+            {
+              id: `${meal.id}-${Date.now()}`,
+              name: meal.name,
+            },
+          ],
+        },
       };
     });
 
     handleCloseMealPicker();
   };
 
-  const activeSection = MEAL_SECTIONS.find((section) => section.key === activeMealType);
-  const selectableMeals = savedMeals.filter((meal) => meal.mealType === activeMealType);
+  const activeSection = MEAL_SECTIONS.find(
+    (section) => section.key === activeSelection?.mealType,
+  );
+  const activeDay = weekDays.find(
+    (day) => day.key === activeSelection?.dateKey,
+  );
+  const selectableMeals = savedMeals.filter(
+    (meal) => meal.mealType === activeSelection?.mealType,
+  );
 
   return (
     <div>
@@ -66,13 +133,13 @@ export default function DailyLogPage() {
         <div>
           <h1>Daily Log</h1>
           <p>
-            Build your day meal by meal. Each section keeps breakfast, lunch,
-            dinner, and snacks separate so the log stays easy to scan.
+            Build your whole week from Monday through Sunday. Each day has its
+            own breakfast, lunch, dinner, and snacks log.
           </p>
         </div>
 
         <label>
-          <span>Select Date</span>
+          <span>Select Any Date In The Week</span>
           <input
             type="date"
             value={selectedDate}
@@ -81,25 +148,39 @@ export default function DailyLogPage() {
         </label>
       </section>
 
-      <section>
-        {MEAL_SECTIONS.map((section) => (
-          <MealSection
-            key={section.key}
-            title={section.title}
-            meals={dailyMeals[section.key]}
-            onAdd={() => handleOpenMealPicker(section.key)}
-          />
-        ))}
+      <section className="daily-log-grid">
+        {weekDays.map((day) => {
+          const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();
+
+          return (
+            <section key={day.key} className="daily-log-day-column">
+              <div className="daily-log-day-header">
+                <h2>{day.label}</h2>
+                <p>{day.shortDate}</p>
+              </div>
+
+              {MEAL_SECTIONS.map((section) => (
+                <MealSection
+                  key={`${day.key}-${section.key}`}
+                  title={section.title}
+                  meals={mealsForDay[section.key]}
+                  onAdd={() => handleOpenMealPicker(day.key, section.key)}
+                />
+              ))}
+            </section>
+          );
+        })}
       </section>
 
-      {activeSection ? (
-        <section>
+      {activeSection && activeDay ? (
+        <dialog open>
           <div>
-            <h2>Select a {activeSection.title} Meal</h2>
-            <p>{activeSection.description}</p>
-            <button type="button" onClick={handleCloseMealPicker}>
-              Close
-            </button>
+            <h2>
+              Select a {activeSection.title} Meal for {activeDay.label}
+            </h2>
+            <p>
+              {activeDay.shortDate}. {activeSection.description}
+            </p>
           </div>
 
           {selectableMeals.length === 0 ? (
@@ -107,17 +188,24 @@ export default function DailyLogPage() {
           ) : (
             <div>
               {selectableMeals.map((meal) => (
-                <button
-                  key={meal.id}
-                  type="button"
-                  onClick={() => handleSelectMeal(activeSection.key, meal)}
-                >
-                  {meal.name}
-                </button>
+                <div key={meal.id}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectMeal(activeDay.key, activeSection.key, meal)
+                    }
+                  >
+                    {meal.name}
+                  </button>
+                </div>
               ))}
             </div>
           )}
-        </section>
+
+          <button type="button" onClick={handleCloseMealPicker}>
+            Close
+          </button>
+        </dialog>
       ) : null}
     </div>
   );
