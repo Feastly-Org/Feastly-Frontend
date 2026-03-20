@@ -68,7 +68,6 @@ export default function RegisterPage() {
         {/* Form */}
         <Box
           component="form"
-          onSubmit={tryRegister}
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
           <TextField
@@ -93,7 +92,13 @@ export default function RegisterPage() {
             required
             fullWidth
           />
-          <Button type="submit" variant="contained" fullWidth size="large">
+          <Button
+            type="button"
+            variant="contained"
+            fullWidth
+            size="large"
+            onClick={(e) => tryRegister(e, formData)}
+          >
             Register
           </Button>
           <Button variant="text" fullWidth onClick={() => navigate("/login")}>

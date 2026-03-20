@@ -68,7 +68,6 @@ export default function LoginPage() {
         {/* Form */}
         <Box
           component="form"
-          onSubmit={tryLogin}
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
           <TextField
@@ -93,7 +92,13 @@ export default function LoginPage() {
             required
             fullWidth
           />
-          <Button type="submit" variant="contained" fullWidth size="large">
+          <Button
+            type="button"
+            variant="contained"
+            fullWidth
+            size="large"
+            onClick={(e) => tryLogin(e, formData)}
+          >
             Login
           </Button>
           <Button
