@@ -1,30 +1,38 @@
+import { Box, Button, Paper, Typography } from "@mui/material";
+
 export default function MealSection({ title, meals, onAdd }) {
   return (
-    <section>
-      <div>
-        <div>
-          <h2>{title}</h2>
-        </div>
+    <Paper
+      variant="outlined"
+      sx={{ p: "0.75rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}
+    >
+      <Typography variant="subtitle1" fontWeight="bold">
+        {title}
+      </Typography>
 
-        <button type="button" onClick={onAdd}>
-          Add {title}
-        </button>
-      </div>
+      <Button
+        type="button"
+        variant="outlined"
+        size="small"
+        onClick={onAdd}
+        sx={{ alignSelf: "flex-start" }}
+      >
+        Add {title}
+      </Button>
 
       {meals.length === 0 ? (
-        <div>
-          <p>No items yet</p>
-        </div>
+        <Typography variant="body2" color="text.secondary">
+          No items yet
+        </Typography>
       ) : (
-        <div>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           {meals.map((meal, index) => (
-            <div key={meal.id}>
-              <span>{index + 1}. </span>
-              <p>{meal.name || `${title} meal`}</p>
-            </div>
+            <Typography key={meal.id} variant="body2">
+              {index + 1}. {meal.name || `${title} meal`}
+            </Typography>
           ))}
-        </div>
+        </Box>
       )}
-    </section>
+    </Paper>
   );
 }

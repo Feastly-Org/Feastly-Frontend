@@ -18,10 +18,12 @@ export default function Navbar() {
   token
     ? (pages = [
         { label: "Dashboard", path: "/" },
+        { label: "Daily Log", path: "/daily-log" },
         { label: "Logout", path: "/logout" },
       ])
     : (pages = [
         { label: "Dashboard", path: "/" },
+        { label: "Daily Log", path: "/daily-log" },
         { label: "Login", path: "/login" },
         { label: "Register", path: "/register" },
       ]);
@@ -53,7 +55,7 @@ export default function Navbar() {
           {pages.map((page) => (
             <Button
               key={page.label}
-              onClick={() => navigate(`/${page.path}`)}
+              onClick={() => navigate(page.path)}
               sx={{ my: "1rem", color: "white", display: "block" }}
             >
               {page.label}

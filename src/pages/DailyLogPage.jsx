@@ -1,6 +1,15 @@
 import { useState } from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Typography,
+} from "@mui/material";
 import MealSection from "../components/MealSection";
-import "../App.css";
 
 const MEAL_SECTIONS = [
   {
@@ -128,36 +137,105 @@ export default function DailyLogPage() {
   );
 
   return (
-    <div>
-      <section>
-        <div>
-          <h1>Daily Log</h1>
-          <p>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        minHeight: "100vh",
+        py: "3rem",
+        px: "1rem",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          maxWidth: "90rem",
+          gap: "1.5rem",
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{ textAlign: "center" }}
+          >
+            Daily Log
+          </Typography>
+          <Typography sx={{ textAlign: "center" }}>
             Build your whole week from Monday through Sunday. Each day has its
             own breakfast, lunch, dinner, and snacks log.
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        <label>
-          <span>Select Any Date In The Week</span>
-          <input
+        <Paper
+          elevation={1}
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "flex-start", sm: "center" },
+            gap: "1rem",
+            p: "1rem",
+          }}
+        >
+          <Box>
+            <Typography variant="h6" fontWeight="bold">
+              Select Any Date In The Week
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              The week view updates automatically from Monday through Sunday.
+            </Typography>
+          </Box>
+          <Box
+            component="input"
             type="date"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
+            sx={{
+              font: "inherit",
+              padding: "0.75rem",
+              borderRadius: "4px",
+              border: "1px solid",
+              borderColor: "divider",
+            }}
           />
-        </label>
-      </section>
+        </Paper>
 
-      <section className="daily-log-grid">
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(7, minmax(180px, 1fr))",
+            gap: "1rem",
+            alignItems: "start",
+            overflowX: "auto",
+          }}
+        >
         {weekDays.map((day) => {
           const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();
 
           return (
-            <section key={day.key} className="daily-log-day-column">
-              <div className="daily-log-day-header">
-                <h2>{day.label}</h2>
-                <p>{day.shortDate}</p>
-              </div>
+            <Paper
+              key={day.key}
+              elevation={1}
+              sx={{
+                minWidth: "180px",
+                p: "1rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <Box>
+                <Typography variant="h6" fontWeight="bold">
+                  {day.label}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {day.shortDate}
+                </Typography>
+              </Box>
 
               {MEAL_SECTIONS.map((section) => (
                 <MealSection
@@ -167,46 +245,54 @@ export default function DailyLogPage() {
                   onAdd={() => handleOpenMealPicker(day.key, section.key)}
                 />
               ))}
-            </section>
+            </Paper>
           );
         })}
-      </section>
+        </Box>
 
       {activeSection && activeDay ? (
-        <dialog open>
-          <div>
-            <h2>
+        <Dialog open onClose={handleCloseMealPicker} fullWidth maxWidth="sm">
+          <DialogTitle>
+            <Typography variant="h6" fontWeight="bold">
               Select a {activeSection.title} Meal for {activeDay.label}
-            </h2>
-            <p>
+            </Typography>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Typography sx={{ mb: "1rem" }} color="text.secondary">
               {activeDay.shortDate}. {activeSection.description}
-            </p>
-          </div>
+            </Typography>
 
           {selectableMeals.length === 0 ? (
-            <p>No saved {activeSection.title.toLowerCase()} meals yet.</p>
+            <Typography>
+              No saved {activeSection.title.toLowerCase()} meals yet.
+            </Typography>
           ) : (
-            <div>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {selectableMeals.map((meal) => (
-                <div key={meal.id}>
-                  <button
+                <Box key={meal.id}>
+                  <Button
                     type="button"
+                    variant="outlined"
+                    fullWidth
                     onClick={() =>
                       handleSelectMeal(activeDay.key, activeSection.key, meal)
                     }
                   >
                     {meal.name}
-                  </button>
-                </div>
+                  </Button>
+                </Box>
               ))}
-            </div>
+            </Box>
           )}
-
-          <button type="button" onClick={handleCloseMealPicker}>
-            Close
-          </button>
-        </dialog>
+          </DialogContent>
+          <DialogActions>
+            <Button type="button" onClick={handleCloseMealPicker}>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       ) : null}
-    </div>
+      </Box>
+    </Box>
   );
 }
