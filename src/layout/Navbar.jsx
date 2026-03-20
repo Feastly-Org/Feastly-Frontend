@@ -24,7 +24,6 @@ export default function Navbar() {
         { label: "Dashboard", path: "/" },
         { label: "Login", path: "/login" },
         { label: "Register", path: "/register" },
-        { label: "Logout", path: "/logout" },
       ]);
 
   return (
