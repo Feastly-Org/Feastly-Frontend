@@ -6,6 +6,7 @@ import RegisterPage from "./pages/Register.jsx";
 import LogoutPage from "./pages/Logout.jsx";
 import Error404 from "./pages/Error404.jsx";
 import DailyLogPage from "./pages/DailyLogPage.jsx";
+import IngredientSearchPage from "./pages/IngredientSearch.jsx";
 import { useAuth } from "./auth/AuthContext.jsx";
 import RequireLogin from "./components/RequireLogin.jsx";
 function App() {
@@ -18,6 +19,10 @@ function App() {
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/logout" element={<LogoutPage />}></Route>
+        <Route
+          path="/ingredients/search"
+          element={token ? <IngredientSearchPage /> : <RequireLogin />}
+        />
         {/* TODO: OTHER ROUTES */}
         <Route path="*" element={<Error404 />}></Route>
       </Route>

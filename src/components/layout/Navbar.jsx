@@ -18,6 +18,7 @@ export default function Navbar() {
   token
     ? (pages = [
         { label: "Dashboard", path: "/" },
+        { label: "Ingredient Search", path: "ingredients/search" },
         { label: "Logout", path: "/logout" },
       ])
     : (pages = [
