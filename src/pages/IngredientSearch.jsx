@@ -18,6 +18,7 @@ const MOCK_INGREDIENTS = [
 ];
 
 export default function IngredientSearchPage() {
+  console.log("DailyTotalsPage rendered");
   const [searchTerm, setSearchTerm] = useState("");
   const [ingredientResults, setIngredientResults] = useState([]);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
