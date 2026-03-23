@@ -19,11 +19,13 @@ export default function Navbar() {
     ? (pages = [
         { label: "Dashboard", path: "/" },
         { label: "Daily Log", path: "/daily-log" },
+        { label: "Meals", path: "/meals" },
         { label: "Logout", path: "/logout" },
       ])
     : (pages = [
         { label: "Dashboard", path: "/" },
         { label: "Daily Log", path: "/daily-log" },
+        { label: "Meals", path: "/meals" },
         { label: "Login", path: "/login" },
         { label: "Register", path: "/register" },
       ]);

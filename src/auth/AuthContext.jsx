@@ -1,11 +1,51 @@
 import { createContext, useContext, useState } from "react";
 
-const API = import.meta.env.VITE_API;
+const API = "/api";
 
 const AuthContext = createContext();
 
+function decodeTokenPayload(token) {
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const [, payload] = token.split(".");
+
+    if (!payload) {
+      return null;
+    }
+
+    const normalizedPayload = payload
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(Math.ceil(payload.length / 4) * 4, "=");
+
+    return JSON.parse(atob(normalizedPayload));
+  } catch {
+    return null;
+  }
+}
+
+async function parseResponse(response) {
+  const text = await response.text();
+
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error("Server returned an invalid response.");
+  }
+}
+
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(sessionStorage.getItem("token"));
+  const decodedToken = decodeTokenPayload(token);
+  const userId = decodedToken?.id ?? null;
+  const user = decodedToken ? { id: userId, ...decodedToken } : null;
 
   const register = async (credentials) => {
     const response = await fetch(API + "/users/register", {
@@ -13,9 +53,9 @@ export function AuthProvider({ children }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
     });
-    const result = await response.json();
+    const result = await parseResponse(response);
     if (!response.ok) {
-      throw Error(result.message);
+      throw Error(result.message || "Registration failed.");
     }
     setToken(result.token);
     sessionStorage.setItem("token", result.token);
@@ -27,9 +67,9 @@ export function AuthProvider({ children }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
     });
-    const result = await response.json();
+    const result = await parseResponse(response);
     if (!response.ok) {
-      throw Error(result.message);
+      throw Error(result.message || "Login failed.");
     }
     setToken(result.token);
     sessionStorage.setItem("token", result.token);
@@ -45,14 +85,14 @@ export function AuthProvider({ children }) {
       method: "GET",
       headers: { Authorization: "Bearer " + token },
     });
-    const result = await response.json();
+    const result = await parseResponse(response);
     if (!response.ok) {
-      throw Error(result.message);
+      throw Error(result.message || "Could not load account details.");
     }
     return result;
   };
 
-  const value = { token, register, login, logout, getAccountDetails };
+  const value = { token, user, userId, register, login, logout, getAccountDetails };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
