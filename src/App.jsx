@@ -1,12 +1,12 @@
 import "./App.css";
 import Layout from "./components/layout/Layout.jsx";
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from "./pages/Register.jsx";
 import LogoutPage from "./pages/Logout.jsx";
 import Error404 from "./pages/Error404.jsx";
 import DailyLogPage from "./pages/DailyLogPage.jsx";
-import DailyTotal from "./pages/DailyTotal.jsx";
+import DailyTotal from "./pages/DailyTotals.jsx";
 import IngredientSearchPage from "./pages/IngredientSearch.jsx";
 import { useAuth } from "./auth/AuthContext.jsx";
 import RequireLogin from "./components/RequireLogin.jsx";
