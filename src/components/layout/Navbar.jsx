@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
 
@@ -19,7 +19,7 @@ export default function Navbar() {
     ? (pages = [
         { label: "Dashboard", path: "/" },
         { label: "Ingredient Search", path: "ingredients/search" },
-        { label: "Daily Total", path: "/daily-total" },
+        { label: "Daily Total", path: "daily-totals" },
         { label: "Logout", path: "/logout" },
       ])
     : (pages = [
