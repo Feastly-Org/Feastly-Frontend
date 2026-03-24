@@ -22,6 +22,7 @@ export default function LogoutPage() {
   }, [countdown]);
 
   return (
+    // Page container
     <Box
       sx={{
         display: "flex",
@@ -32,9 +33,11 @@ export default function LogoutPage() {
         gap: "1rem",
       }}
     >
+      {/* Logout Message */}
       <Typography variant="h4" fontWeight="bold">
         You've been logged out
       </Typography>
+      {/* Redirection notificaiton */}
       <Typography variant="body1" color="text.secondary">
         Redirecting you to logout in...
       </Typography>
@@ -49,6 +52,7 @@ export default function LogoutPage() {
         sx={{ width: "20rem", height: "1rem", borderRadius: "1rem" }}
       />
       <Typography>
+        {/* Option to manually redirect */}
         <Link to="/">If you are not redirected, please click here.</Link>
       </Typography>
     </Box>
