@@ -3,13 +3,13 @@ import { useAuth } from "../auth/AuthContext.jsx";
 import { Box, Typography, TextField, Button, Alert } from "@mui/material";
 import { useNavigate } from "react-router";
 
-/** A form that allows users to log into an existing account. */
 export default function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
 
+  // Send API request to backend for registering, if successful navigate to dashboard
   const tryRegister = async (event, formData) => {
     event.preventDefault();
     setError(null);
@@ -20,6 +20,7 @@ export default function RegisterPage() {
       await register({ email, password });
       navigate("/");
     } catch (e) {
+      // If fail, set an error and display it to the user on the register page
       setError(e.message);
     }
   };
@@ -92,6 +93,7 @@ export default function RegisterPage() {
             required
             fullWidth
           />
+          {/* Register submission button */}
           <Button
             type="button"
             variant="contained"
@@ -101,6 +103,7 @@ export default function RegisterPage() {
           >
             Register
           </Button>
+          {/* Login button */}
           <Button variant="text" fullWidth onClick={() => navigate("/login")}>
             Have an account? Click here to login.
           </Button>
