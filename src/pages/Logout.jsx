@@ -19,7 +19,7 @@ export default function LogoutPage() {
     }
     const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
     return () => clearTimeout(timer);
-  }, [countdown]);
+  }, [countdown, navigate]);
 
   return (
     <Box

@@ -49,6 +49,20 @@ export function toUiMealType(mealType) {
   return API_TO_UI_MEAL_TYPE[mealType] ?? mealType;
 }
 
+function normalizeMeal(meal) {
+  const rawDate = meal.meal_date ?? meal.mealDate ?? null;
+  const normalizedDate =
+    typeof rawDate === "string" ? rawDate.split("T")[0] : rawDate;
+
+  return {
+    id: meal.id,
+    name: meal.name || "",
+    mealDate: normalizedDate,
+    mealType: toUiMealType(meal.meal_type ?? meal.mealType),
+    ingredients: Array.isArray(meal.ingredients) ? meal.ingredients : [],
+  };
+}
+
 export async function fetchMeals(token) {
   const meals = await apiRequest("/meals", {
     method: "GET",
@@ -57,14 +71,12 @@ export async function fetchMeals(token) {
     },
   });
 
-  return meals.map((meal) => ({
-    ...meal,
-    mealType: toUiMealType(meal.meal_type),
-  }));
+  if (!Array.isArray(meals)) return [];
+  return meals.map(normalizeMeal);
 }
 
 export async function createMeal({ mealDate, mealType, token }) {
-  return apiRequest("/meals", {
+  const meal = await apiRequest("/meals", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -74,6 +86,8 @@ export async function createMeal({ mealDate, mealType, token }) {
       mealType: toApiMealType(mealType),
     }),
   });
+
+  return normalizeMeal(meal);
 }
 
 export async function deleteMeal(id, token) {
