@@ -21,7 +21,6 @@ export default function Navbar() {
     ? (pages = [
         { label: "Dashboard", path: "/" },
         { label: "Ingredient Search", path: "ingredients/search" },
-        { label: "Daily Total", path: "/daily-total" },
         { label: "Daily Log", path: "/daily-log" },
         { label: "Meals", path: "/meals" },
         { label: "Daily Total", path: "daily-totals" },
