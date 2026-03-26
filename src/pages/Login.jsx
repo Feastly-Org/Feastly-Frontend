@@ -61,11 +61,7 @@ export default function LoginPage() {
             Login to an account
           </Typography>
         </Box>
-
-        {/* Show errors */}
         {error && <Alert severity="error">{error}</Alert>}
-
-        {/* Form */}
         <Box
           component="form"
           sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
