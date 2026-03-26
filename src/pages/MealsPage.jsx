@@ -23,7 +23,7 @@ MAIN IDEAS TO EXPLAIN IN CLASS:
 ========================================
 */
 
-import { useEffect, useState } from "react"; // Imports React hooks: useState for state, useEffect for side effects like fetching data
+import { useEffect, useState } from "react"; /// Imports React hooks: useState for state, useEffect for side effects like fetching data
 import {
   Alert, // Shows error messages in a styled alert box
   Autocomplete, // Searchable dropdown for ingredient selection
