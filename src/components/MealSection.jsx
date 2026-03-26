@@ -11,7 +11,7 @@ export default function MealSection({ title, meals, onAdd, onDelete }) {
         {/* Displays the section title (e.g., Breakfast, Lunch, Dinner) */}
         {title}
       </Typography>
-
+      {/* Add meal button */}
       <Button type="button" variant="outlined" size="small" onClick={onAdd}>
         {/* Button that triggers the onAdd callback when clicked */}
         Add {title}

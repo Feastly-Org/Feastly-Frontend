@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
 
@@ -14,12 +14,16 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { token } = useAuth();
   let pages = [];
-  // token conditionals
+  /* If logged in, show all options
+   * If not logged in, show minimal options
+   */
   token
     ? (pages = [
         { label: "Dashboard", path: "/" },
+        { label: "Ingredient Search", path: "ingredients/search" },
         { label: "Daily Log", path: "/daily-log" },
         { label: "Meals", path: "/meals" },
+        { label: "Daily Total", path: "daily-totals" },
         { label: "Logout", path: "/logout" },
       ])
     : (pages = [
@@ -33,9 +37,11 @@ export default function Navbar() {
   return (
     <AppBar position="sticky">
       <Toolbar>
+        {/* Logo */}
         <FoodBankIcon
           sx={{ display: { xs: "flex", md: "flex" }, mr: "1rem" }}
         />
+        {/* App Name */}
         <Typography
           variant="h6"
           noWrap
@@ -54,6 +60,7 @@ export default function Navbar() {
           FEASTLY
         </Typography>
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          {/* Add respective pages to the navbar */}
           {pages.map((page) => (
             <Button
               key={page.label}
@@ -64,11 +71,11 @@ export default function Navbar() {
             </Button>
           ))}
         </Box>
+        {/* If the user is logged in, display MUI's default avatar */}
         {token && (
           <Tooltip title="Open account settings">
             <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
               <Avatar />
-              {/* If the user is logged in, display mui's default avatar */}
             </IconButton>
           </Tooltip>
         )}

@@ -15,7 +15,7 @@ import {
 const pickerListSx = {
   display: "flex",
   flexDirection: "column",
-  gap: 1.5,
+  gap: "0.75rem",
 };
 
 // Main component that displays a dialog allowing the user to pick a meal.
@@ -64,6 +64,7 @@ export default function MealPickerDialog({
                 fullWidth
                 onClick={() => onSelectMeal(meal)} // Sends selected meal back to parent
               >
+                {/* Make each meal a button, if clicked set the meal as the selected meal */}
                 {meal.name || `${activeSection.title} meal`}
                 {/* Shows the meal name or a fallback label */}
               </Button>
