@@ -13,34 +13,29 @@ import { useAuth } from "./auth/AuthContext.jsx";
 import RequireLogin from "./components/RequireLogin.jsx";
 function App() {
   const { token } = useAuth();
-  return (
+  return token ? (
     <Routes>
       {/* Adds navbar */}
       <Route element={<Layout />}>
-        <Route index element={token ? <DailyLogPage /> : <RequireLogin />} />{" "}
+        <Route index element={<DailyLogPage />} />
         {/* All page routes */}
-        <Route
-          path="/daily-log"
-          element={token ? <DailyLogPage /> : <RequireLogin />}
-        ></Route>
-        <Route
-          path="/meals"
-          element={token ? <MealsPage /> : <RequireLogin />}
-        ></Route>
+        <Route path="/daily-log" element={<DailyLogPage />}></Route>
+        <Route path="/meals" element={<MealsPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/logout" element={<LogoutPage />}></Route>
-        <Route
-          path="/ingredients/search"
-          element={token ? <IngredientSearchPage /> : <RequireLogin />}
-        />
-        <Route
-          path="/daily-totals"
-          element={token ? <DailyTotal /> : <RequireLogin />}
-        />{" "}
-        {/* If route does not exist, give the user a 404 Error */}
+        <Route path="/ingredients/search" element={<IngredientSearchPage />} />
+        <Route path="/daily-totals" element={<DailyTotal />} />
         <Route path="*" element={<Error404 />}></Route>
       </Route>
+    </Routes>
+  ) : (
+    <Routes>
+      {/* No login routes */}
+      <Route index element={<RequireLogin />}></Route>
+      <Route path="/login" element={<LoginPage />}></Route>
+      <Route path="/register" element={<RegisterPage />}></Route>
+      <Route path="/logout" element={<LogoutPage />}></Route>
     </Routes>
   );
 }

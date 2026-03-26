@@ -97,7 +97,6 @@ export default function Navbar() {
           FEASTLY
         </Typography>
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-          {/* Add respective pages to the navbar */}
           {pages.map((page) => (
             <Button
               key={page.label}
@@ -108,7 +107,6 @@ export default function Navbar() {
             </Button>
           ))}
         </Box>
-        {/* If the user is logged in, display MUI's default avatar */}
         {token && (
           <Tooltip title="Open account settings">
             <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
