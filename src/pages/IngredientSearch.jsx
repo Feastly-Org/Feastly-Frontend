@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
-// Hardcoded ingredient data
+// Mock data
 const MOCK_INGREDIENTS = [
   {
     id: 1,
@@ -28,7 +28,6 @@ const MOCK_INGREDIENTS = [
   { id: 5, name: "Egg", calories: 78, protein: 6, carbs: 1, fat: 5 },
 ];
 
-/** Allows the user to search for ingredients and view nutrition details. */
 export default function IngredientSearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [ingredientResults, setIngredientResults] = useState([]);
@@ -96,15 +95,15 @@ export default function IngredientSearchPage() {
       <Box sx={{ width: "100%", maxWidth: "70rem" }}>
         {/* Header */}
         <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
+          <Typography variant="h4" fontWeight="bold">
             Ingredient Search
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Search for ingredients from the database and select one.
+            Search for ingredients and view nutrition details.
           </Typography>
         </Box>
 
-        {/* Main layout */}
+        {/* Layout */}
         <Box
           sx={{
             display: "grid",
@@ -128,7 +127,7 @@ export default function IngredientSearchPage() {
             </Typography>
 
             <TextField
-              label="Search Ingredients"
+              label="Search"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -178,7 +177,7 @@ export default function IngredientSearchPage() {
             )}
           </Paper>
 
-          {/* Selected Ingredient Card */}
+          {/* Selected Ingredient */}
           <Paper
             elevation={3}
             sx={{
@@ -199,39 +198,87 @@ export default function IngredientSearchPage() {
               </Typography>
             ) : (
               <>
+                {/* Name */}
                 <Paper
                   elevation={1}
                   sx={{
                     p: 2,
                     borderRadius: 3,
                     backgroundColor: "#f8fafc",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1.5,
+                    textAlign: "center",
                   }}
                 >
-                  <Typography variant="body1">
-                    <strong>Name:</strong> {selectedIngredient.name}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Calories:</strong> {selectedIngredient.calories}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Protein:</strong> {selectedIngredient.protein}g
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Carbs:</strong> {selectedIngredient.carbs}g
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Fat:</strong> {selectedIngredient.fat}g
+                  <Typography variant="h6" fontWeight="bold">
+                    {selectedIngredient.name}
                   </Typography>
                 </Paper>
 
-                <Button
-                  variant="outlined"
-                  onClick={handleClearSelection}
-                  sx={{ alignSelf: "flex-start" }}
+                {/* Macro Cards */}
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 2,
+                  }}
                 >
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#e3f2fd",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Calories</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.calories}
+                    </Typography>
+                  </Paper>
+
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#e8f5e9",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Protein</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.protein}g
+                    </Typography>
+                  </Paper>
+
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#fff3e0",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Carbs</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.carbs}g
+                    </Typography>
+                  </Paper>
+
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#fce4ec",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Fat</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.fat}g
+                    </Typography>
+                  </Paper>
+                </Box>
+
+                <Button variant="outlined" onClick={handleClearSelection}>
                   Clear Selection
                 </Button>
               </>
