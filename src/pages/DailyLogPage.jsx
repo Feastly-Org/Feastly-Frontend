@@ -1,17 +1,37 @@
+// React hooks for component state and lifecycle
 import { useEffect, useState } from "react";
+
+// Material UI layout components
 import { Box, Paper, Typography } from "@mui/material";
+
+// Custom authentication hook that provides the logged‑in user's token
 import { useAuth } from "../auth/AuthContext";
+
+// Reusable UI components for rendering meal sections and the meal picker dialog
 import MealSection from "../components/MealSection";
 import MealPickerDialog from "../components/MealPickerDialog";
-import {
-  buildWeekDays,
-  createEmptyDayMeals,
-  groupMealsByDay,
-  MEAL_SECTIONS,
-} from "../features/mealHelper";
-import { createMeal, deleteMeal, fetchMeals } from "../features/mealApi";
-import { getMealTemplates } from "../features/mealTableApi";
 
+// Helper functions for building week structure and organizing meals
+import {
+  buildWeekDays, // Generates Monday–Sunday objects based on a selected date
+  createEmptyDayMeals, // Returns an empty meal structure for a day
+  groupMealsByDay, // Converts backend meal list into { date: { mealType: [...] } }
+  MEAL_SECTIONS, // Static config for breakfast/lunch/dinner/snacks
+} from "../services/mealHelper";
+
+// API functions for CRUD operations on meals
+import { createMeal, deleteMeal, fetchMeals } from "../services/mealApi";
+
+// API functions for working with saved meal templates
+import {
+  createMealFromTemplate,
+  getMealTemplates,
+} from "../services/mealTableApi";
+
+// -----------------------------
+// Layout style objects
+// These keep JSX clean and make layout easy to maintain
+// -----------------------------
 const pageSx = {
   display: "flex",
   justifyContent: "center",
@@ -68,6 +88,10 @@ const dayColumnSx = {
   gap: 2,
 };
 
+// -----------------------------
+// Helper: Add a meal to the weekly state immutably
+// Ensures React state updates remain pure and predictable
+// -----------------------------
 function addMealToWeek(currentMeals, dateKey, mealType, meal) {
   const nextMeals = { ...currentMeals };
   const dayMeals = nextMeals[dateKey] ?? createEmptyDayMeals();
@@ -80,29 +104,54 @@ function addMealToWeek(currentMeals, dateKey, mealType, meal) {
   return nextMeals;
 }
 
+// -----------------------------
+// Main Component
+// -----------------------------
 export default function DailyLogPage() {
-  const { token } = useAuth();
+  const { token } = useAuth(); // Logged‑in user's token
+
+  // The date selected by the user; determines which week is displayed
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0],
   );
-  // `weeklyMeals` is the rendered log state: one week, grouped by day, then meal type.
+
+  // Meals grouped by day and meal type for the currently displayed week
   const [weeklyMeals, setWeeklyMeals] = useState({});
-  // `savedMeals` are reusable templates created on the Meals page and shown in the picker.
+
+  // Saved reusable meal templates (created on the Meals page)
   const [savedMeals, setSavedMeals] = useState([]);
-  // Tracks which day + meal section is currently selecting from the picker dialog.
+
+  // Tracks which day + meal type is currently being edited in the picker dialog
   const [activeSelection, setActiveSelection] = useState(null);
+
+  // Stores error messages from backend operations
   const [error, setError] = useState(null);
 
-  // The selected date controls which Monday-Sunday week is on screen.
+  // -----------------------------
+  // Derived values based on selected date and active selection
+  // -----------------------------
+
+  // Build Monday–Sunday objects for the selected week
   const weekDays = buildWeekDays(selectedDate);
+
+  // The meal section (breakfast/lunch/etc.) currently being edited
   const activeSection = MEAL_SECTIONS.find(
     (section) => section.key === activeSelection?.mealType,
   );
-  const activeDay = weekDays.find((day) => day.key === activeSelection?.dateKey);
+
+  // The day object currently being edited
+  const activeDay = weekDays.find(
+    (day) => day.key === activeSelection?.dateKey,
+  );
+
+  // Filter saved templates so the picker only shows templates for the correct meal type
   const selectableMeals = savedMeals.filter(
     (meal) => meal.mealType === activeSelection?.mealType,
   );
 
+  // -----------------------------
+  // Load meals + templates when the token becomes available
+  // -----------------------------
   useEffect(() => {
     async function loadMeals() {
       if (!token) {
@@ -111,13 +160,13 @@ export default function DailyLogPage() {
       }
 
       try {
-        // Load persisted meal entries from the backend and reusable templates
-        // from local storage so the picker can offer previously saved meals.
+        // Load both meals and templates in parallel for efficiency
         const [meals, templates] = await Promise.all([
           fetchMeals(token),
-          Promise.resolve(getMealTemplates()),
+          getMealTemplates(token),
         ]);
 
+        // Save templates and group meals by day for rendering
         setSavedMeals(templates);
         setWeeklyMeals(groupMealsByDay(meals));
         setError(null);
@@ -127,8 +176,12 @@ export default function DailyLogPage() {
     }
 
     loadMeals();
-  }, [token]);
+  }, [token]); // Re-run when user logs in/out
 
+  // -----------------------------
+  // Open the meal picker dialog
+  // requestAnimationFrame ensures the button loses focus first
+  // -----------------------------
   const handleOpenMealPicker = (event, dateKey, mealType) => {
     event.currentTarget.blur();
     requestAnimationFrame(() => {
@@ -136,10 +189,14 @@ export default function DailyLogPage() {
     });
   };
 
+  // Close the meal picker dialog
   const handleCloseMealPicker = () => {
     setActiveSelection(null);
   };
 
+  // -----------------------------
+  // Create a meal (either from a template or empty)
+  // -----------------------------
   const handleCreateMeal = async (mealTemplate) => {
     if (!activeSelection || !token) {
       setError("You must be logged in to create a meal.");
@@ -147,14 +204,22 @@ export default function DailyLogPage() {
     }
 
     try {
-      // The backend creates the dated meal entry. If the user picked a saved
-      // template, we keep its display name and ingredient list in local UI state.
-      const createdMeal = await createMeal({
-        mealDate: activeSelection.dateKey,
-        mealType: activeSelection.mealType,
-        token,
-      });
+      // If a template was selected → use template API
+      // Otherwise → create an empty meal
+      const createdMeal = mealTemplate?.id
+        ? await createMealFromTemplate(
+            mealTemplate.id,
+            activeSelection.dateKey,
+            activeSelection.mealType,
+            token,
+          )
+        : await createMeal({
+            mealDate: activeSelection.dateKey,
+            mealType: activeSelection.mealType,
+            token,
+          });
 
+      // Normalize meal shape so UI always receives consistent data
       const nextMeal = {
         id: createdMeal.id,
         name:
@@ -162,10 +227,11 @@ export default function DailyLogPage() {
           createdMeal.name ||
           `${activeSelection.mealType} meal`,
         mealDate: activeSelection.dateKey,
-        ingredients: mealTemplate?.ingredients ?? [],
+        ingredients: createdMeal.ingredients ?? mealTemplate?.ingredients ?? [],
+        mealType: activeSelection.mealType,
       };
 
-      // Create on the backend, then mirror that change in the weekly UI state.
+      // Update UI state immutably
       setWeeklyMeals((current) =>
         addMealToWeek(
           current,
@@ -182,11 +248,14 @@ export default function DailyLogPage() {
     }
   };
 
+  // -----------------------------
+  // Delete a meal from backend and UI state
+  // -----------------------------
   const handleDeleteMeal = async (meal, mealDate, mealType) => {
     try {
       await deleteMeal(meal.id, token);
 
-      // Remove the meal from the currently rendered week after the backend delete succeeds.
+      // Remove meal from UI after backend confirms deletion
       setWeeklyMeals((current) => ({
         ...current,
         [mealDate]: {
@@ -203,17 +272,32 @@ export default function DailyLogPage() {
     }
   };
 
+  // -----------------------------
+  // Render the page
+  // -----------------------------
   return (
     <Box sx={pageSx}>
       <Box sx={contentSx}>
+        {/* Header section */}
         <Box sx={headerSx}>
-          <Typography variant="h4" fontWeight="bold" sx={{ textAlign: "center" }}>
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{ textAlign: "center" }}
+          >
             Daily Log
           </Typography>
+
           <Typography sx={{ textAlign: "center" }}>
             Build your whole week from Monday through Sunday. Each day has its
             own breakfast, lunch, dinner, and snacks log.
           </Typography>
+
+          <Typography color="text.secondary" sx={{ textAlign: "center" }}>
+            Meals are saved automatically as soon as you add or delete them.
+          </Typography>
+
+          {/* Error message */}
           {error ? (
             <Typography color="error" sx={{ textAlign: "center" }}>
               {error}
@@ -221,6 +305,7 @@ export default function DailyLogPage() {
           ) : null}
         </Box>
 
+        {/* Date selector card */}
         <Paper elevation={1} sx={controlsCardSx}>
           <Box>
             <Typography variant="h6" fontWeight="bold">
@@ -230,6 +315,8 @@ export default function DailyLogPage() {
               The week view updates automatically from Monday through Sunday.
             </Typography>
           </Box>
+
+          {/* Date input controls which week is displayed */}
           <Box
             component="input"
             type="date"
@@ -239,13 +326,14 @@ export default function DailyLogPage() {
           />
         </Paper>
 
-        {/* Render one column per day, then let each column render its meal sections. */}
+        {/* Week grid: one column per day */}
         <Box sx={weekGridSx}>
           {weekDays.map((day) => {
             const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();
 
             return (
               <Paper key={day.key} elevation={1} sx={dayColumnSx}>
+                {/* Day header */}
                 <Box>
                   <Typography variant="h6" fontWeight="bold">
                     {day.label}
@@ -255,6 +343,7 @@ export default function DailyLogPage() {
                   </Typography>
                 </Box>
 
+                {/* Render breakfast/lunch/dinner/snacks sections */}
                 {MEAL_SECTIONS.map((section) => (
                   <MealSection
                     key={`${day.key}-${section.key}`}
@@ -273,6 +362,7 @@ export default function DailyLogPage() {
           })}
         </Box>
 
+        {/* Dialog for selecting or creating meals */}
         <MealPickerDialog
           activeDay={activeDay}
           activeSection={activeSection}
