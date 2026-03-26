@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const API = import.meta.env.VITE_API;
 
@@ -52,7 +52,13 @@ export function AuthProvider({ children }) {
     return result;
   };
 
-  const value = { token, register, login, logout, getAccountDetails };
+  const value = {
+    token,
+    register,
+    login,
+    logout,
+    getAccountDetails,
+  };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

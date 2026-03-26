@@ -3,7 +3,11 @@ import { useAuth } from "../auth/AuthContext.jsx";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { Link, useNavigate } from "react-router";
 import { LinearProgress } from "@mui/material";
-// Logout page
+/* Logout page
+This page was added because our design agreed upon a logout page
+It consists of a timer after logging out
+When the timer hits 0, redirect the user to the homepage
+*/
 export default function LogoutPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -19,9 +23,10 @@ export default function LogoutPage() {
     }
     const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
     return () => clearTimeout(timer);
-  }, [countdown]);
+  }, [countdown, navigate]);
 
   return (
+    // Page container
     <Box
       sx={{
         display: "flex",
@@ -38,11 +43,9 @@ export default function LogoutPage() {
       <Typography variant="body1" color="text.secondary">
         Redirecting you to logout in...
       </Typography>
-      {/* Countdown */}
       <Typography variant="h1" color="primary" fontWeight="bold">
         {countdown}
       </Typography>
-      {/*/ Progress Bar */}
       <LinearProgress
         variant="determinate"
         value={progress}

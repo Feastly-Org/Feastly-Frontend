@@ -6,33 +6,41 @@ import IconButton from "@mui/material/IconButton";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { token } = useAuth();
-  let pages = [];
-  // token conditionals
-  token
-    ? (pages = [
+  /* If logged in, show all page options
+   * If not logged in, show minimal options
+   */
+  const pages = token
+    ? [
         { label: "Dashboard", path: "/" },
         { label: "Ingredient Search", path: "ingredients/search" },
+        { label: "Daily Log", path: "/daily-log" },
+        { label: "Meals", path: "/meals" },
+        { label: "Daily Total", path: "daily-totals" },
         { label: "Logout", path: "/logout" },
-      ])
-    : (pages = [
+      ]
+    : [
         { label: "Dashboard", path: "/" },
+        { label: "Daily Log", path: "/daily-log" },
+        { label: "Meals", path: "/meals" },
         { label: "Login", path: "/login" },
         { label: "Register", path: "/register" },
-      ]);
+      ];
 
   return (
     <AppBar position="sticky">
       <Toolbar>
+        {/* Logo */}
         <FoodBankIcon
           sx={{ display: { xs: "flex", md: "flex" }, mr: "1rem" }}
         />
+        {/* App Name */}
         <Typography
           variant="h6"
           noWrap
@@ -54,7 +62,7 @@ export default function Navbar() {
           {pages.map((page) => (
             <Button
               key={page.label}
-              onClick={() => navigate(`/${page.path}`)}
+              onClick={() => navigate(page.path)}
               sx={{ my: "1rem", color: "white", display: "block" }}
             >
               {page.label}
@@ -65,7 +73,6 @@ export default function Navbar() {
           <Tooltip title="Open account settings">
             <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
               <Avatar />
-              {/* If the user is logged in, display mui's default avatar */}
             </IconButton>
           </Tooltip>
         )}
