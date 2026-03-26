@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
-import "../App.css";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  List,
+  ListItemButton,
+  ListItemText,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
-// Hardcoded ingredient data
+// Mock data
 const MOCK_INGREDIENTS = [
   {
     id: 1,
@@ -43,6 +54,7 @@ export default function IngredientSearchPage() {
   const handleSearchIngredients = (query) => {
     try {
       setIsLoading(true);
+      setErrorMessage("");
 
       const results = MOCK_INGREDIENTS.filter((ingredient) =>
         ingredient.name.toLowerCase().includes(query),
@@ -72,74 +84,209 @@ export default function IngredientSearchPage() {
   };
 
   return (
-    <div>
-      <section>
-        <h1>Ingredient Search</h1>
-        <p>Search for ingredients from the database and select one.</p>
-      </section>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        px: 2,
+        py: 4,
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Box sx={{ width: "100%", maxWidth: "70rem" }}>
+        {/* Header */}
+        <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Typography variant="h4" fontWeight="bold">
+            Ingredient Search
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Search for ingredients and view nutrition details.
+          </Typography>
+        </Box>
 
-      <section className="ingredient-search-layout">
-        <div className="ingredient-search-card">
-          <label>Search Ingredients</label>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setSelectedIngredient(null);
+        {/* Layout */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: 3,
+          }}
+        >
+          {/* Search Card */}
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
             }}
-            placeholder="Search by ingredient name"
-          />
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Search Ingredients
+            </Typography>
 
-          {isLoading && <p>Loading ingredients...</p>}
-          {errorMessage && <p>{errorMessage}</p>}
+            <TextField
+              label="Search"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setSelectedIngredient(null);
+              }}
+              placeholder="Search by ingredient name"
+              fullWidth
+            />
 
-          {!isLoading && searchTerm && ingredientResults.length === 0 && (
-            <p>No ingredients found.</p>
-          )}
+            {isLoading && (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 2 }}>
+                <CircularProgress />
+              </Box>
+            )}
 
-          {ingredientResults.length > 0 && (
-            <div className="ingredient-results">
-              {ingredientResults.map((ingredient) => (
-                <button
-                  key={ingredient.id}
-                  onClick={() => handleSelectIngredient(ingredient)}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
+            {!isLoading &&
+              searchTerm &&
+              ingredientResults.length === 0 &&
+              !selectedIngredient && (
+                <Typography color="text.secondary">
+                  No ingredients found.
+                </Typography>
+              )}
+
+            {ingredientResults.length > 0 && (
+              <Paper
+                variant="outlined"
+                sx={{
+                  borderRadius: 2,
+                  maxHeight: 300,
+                  overflowY: "auto",
+                }}
+              >
+                <List disablePadding>
+                  {ingredientResults.map((ingredient) => (
+                    <ListItemButton
+                      key={ingredient.id}
+                      onClick={() => handleSelectIngredient(ingredient)}
+                    >
+                      <ListItemText primary={ingredient.name} />
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Paper>
+            )}
+          </Paper>
+
+          {/* Selected Ingredient */}
+          <Paper
+            elevation={3}
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Selected Ingredient
+            </Typography>
+
+            {!selectedIngredient ? (
+              <Typography color="text.secondary">
+                No ingredient selected yet.
+              </Typography>
+            ) : (
+              <>
+                {/* Name */}
+                <Paper
+                  elevation={1}
+                  sx={{
+                    p: 2,
+                    borderRadius: 3,
+                    backgroundColor: "#f8fafc",
+                    textAlign: "center",
+                  }}
                 >
-                  {ingredient.name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+                  <Typography variant="h6" fontWeight="bold">
+                    {selectedIngredient.name}
+                  </Typography>
+                </Paper>
 
-        <div className="ingredient-search-card">
-          <h2>Selected Ingredient</h2>
+                {/* Macro Cards */}
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: 2,
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#e3f2fd",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Calories</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.calories}
+                    </Typography>
+                  </Paper>
 
-          {!selectedIngredient ? (
-            <p>No ingredient selected yet.</p>
-          ) : (
-            <div>
-              <p>
-                <strong>Name:</strong> {selectedIngredient.name}
-              </p>
-              <p>
-                <strong>Calories:</strong> {selectedIngredient.calories}
-              </p>
-              <p>
-                <strong>Protein:</strong> {selectedIngredient.protein}
-              </p>
-              <p>
-                <strong>Carbs:</strong> {selectedIngredient.carbs}
-              </p>
-              <p>
-                <strong>Fat:</strong> {selectedIngredient.fat}
-              </p>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#e8f5e9",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Protein</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.protein}g
+                    </Typography>
+                  </Paper>
 
-              <button onClick={handleClearSelection}>Clear Selection</button>
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#fff3e0",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Carbs</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.carbs}g
+                    </Typography>
+                  </Paper>
+
+                  <Paper
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#fce4ec",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography variant="subtitle2">Fat</Typography>
+                    <Typography variant="h6" fontWeight="bold">
+                      {selectedIngredient.fat}g
+                    </Typography>
+                  </Paper>
+                </Box>
+
+                <Button variant="outlined" onClick={handleClearSelection}>
+                  Clear Selection
+                </Button>
+              </>
+            )}
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
 }
