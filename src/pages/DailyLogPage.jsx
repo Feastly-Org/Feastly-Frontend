@@ -17,16 +17,16 @@ import {
   createEmptyDayMeals, // Returns an empty meal structure for a day
   groupMealsByDay, // Converts backend meal list into { date: { mealType: [...] } }
   MEAL_SECTIONS, // Static config for breakfast/lunch/dinner/snacks
-} from "../features/mealHelper";
+} from "../services/mealHelper";
 
 // API functions for CRUD operations on meals
-import { createMeal, deleteMeal, fetchMeals } from "../features/mealApi";
+import { createMeal, deleteMeal, fetchMeals } from "../services/mealApi";
 
 // API functions for working with saved meal templates
 import {
   createMealFromTemplate,
   getMealTemplates,
-} from "../features/mealTableApi";
+} from "../services/mealTableApi";
 
 // -----------------------------
 // Layout style objects

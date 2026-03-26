@@ -7,7 +7,7 @@ export const MEAL_SECTIONS = [
   {
     // Unique key used internally to identify this section
     key: "breakfast",
-    // Human-readable title shown in the UI
+    // Readable title shown in the UI
     title: "Breakfast",
     // Short description explaining the purpose of this section
     description: "Start the day with your first meal.",
@@ -16,7 +16,7 @@ export const MEAL_SECTIONS = [
   {
     // Unique key used internally to identify this section
     key: "lunch",
-    // Human-readable title shown in the UI
+    // Readable title shown in the UI
     title: "Lunch",
     // Short description explaining the purpose of this section
     description: "Track your midday meals and quick bites.",
@@ -25,7 +25,7 @@ export const MEAL_SECTIONS = [
   {
     // Unique key used internally to identify this section
     key: "dinner",
-    // Human-readable title shown in the UI
+    // Readable title shown in the UI
     title: "Dinner",
     // Short description explaining the purpose of this section
     description: "Keep your evening meals in one place.",
@@ -34,7 +34,7 @@ export const MEAL_SECTIONS = [
   {
     // Unique key used internally to identify this section
     key: "snacks",
-    // Human-readable title shown in the UI
+    // Readable title shown in the UI
     title: "Snacks",
     // Short description explaining the purpose of this section
     description: "Log everything in between the main meals.",

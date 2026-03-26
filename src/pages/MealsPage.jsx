@@ -39,14 +39,14 @@ import {
   Typography, // Text display component
 } from "@mui/material";
 import { useAuth } from "../auth/AuthContext"; // Custom hook to access authentication data like token
-import { fetchIngredients } from "../features/ingredientApi"; // API function to load all ingredients
-import { MEAL_SECTIONS } from "../features/mealHelper"; // Constant list of meal section options like breakfast/lunch/dinner
+import { fetchIngredients } from "../services/ingredientApi"; // API function to load all ingredients
+import { MEAL_SECTIONS } from "../services/mealHelper"; // Constant list of meal section options like breakfast/lunch/dinner
 import {
   createMealTemplate, // API function to create a new meal template
   deleteMealTemplate, // API function to delete a meal template
   getMealTemplates, // API function to fetch all meal templates
   updateMealTemplate, // API function to update an existing meal template
-} from "../features/mealTableApi";
+} from "../services/mealTableApi";
 
 /*
 This object is the default form state.
