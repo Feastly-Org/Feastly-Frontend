@@ -50,7 +50,7 @@ export default function MealPickerDialog({
         </Typography>
 
         {/* If there are no saved meals, show a fallback message */}
-        {meals.length === 0 ? (
+        {!meals || meals.length === 0 ? (
           <Typography>No saved meals yet for this type.</Typography>
         ) : (
           // Otherwise, show a list of selectable meal buttons
