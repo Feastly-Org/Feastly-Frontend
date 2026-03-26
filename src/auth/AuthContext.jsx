@@ -6,25 +6,6 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(sessionStorage.getItem("token"));
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Set user to null if the user is not logged in
-    if (!token) {
-      setUser(null);
-      return;
-    }
-    // Try to get a user, if fail set user to null
-    const fetchUser = async () => {
-      try {
-        const result = await getAccountDetails(token);
-        setUser(result);
-      } catch {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, [token]);
 
   const register = async (credentials) => {
     const response = await fetch(API + "/users/register", {
@@ -73,7 +54,6 @@ export function AuthProvider({ children }) {
 
   const value = {
     token,
-    user,
     register,
     login,
     logout,
