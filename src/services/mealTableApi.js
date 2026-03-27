@@ -2,12 +2,12 @@
 import { toApiMealType, toUiMealType } from "./mealApi";
 
 // Define a constant prefix for all API endpoints
-const API_PREFIX = "/api";
+const BASE_URL = import.meta.env.VITE_API;
 
 // Define a reusable async function to make API requests
 async function apiRequest(path, options = {}) {
   // Send a fetch request to the API using the prefix and provided path
-  const response = await fetch(`${API_PREFIX}${path}`, {
+  const response = await fetch(`${BASE_URL}${path}`, {
     // Spread any custom options passed into the function
     ...options,
     // Ensure we always send JSON from the client
