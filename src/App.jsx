@@ -1,6 +1,6 @@
 import "./App.css";
 import Layout from "./components/layout/Layout.jsx";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from "./pages/Register.jsx";
 import LogoutPage from "./pages/Logout.jsx";

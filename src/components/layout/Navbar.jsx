@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { Button } from "@mui/material";
 import { Tooltip } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Avatar } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
 import { useState } from "react";
