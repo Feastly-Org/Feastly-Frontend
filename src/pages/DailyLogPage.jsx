@@ -1,10 +1,5 @@
-// React hooks for component state and lifecycle
 import { useEffect, useState } from "react";
-
-// Material UI layout components
-import { Box, Paper, Typography } from "@mui/material";
-
-// Custom authentication hook that provides the logged‑in user's token
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useAuth } from "../auth/AuthContext";
 
 // Reusable UI components for rendering meal sections and the meal picker dialog
@@ -36,23 +31,35 @@ const pageSx = {
   display: "flex",
   justifyContent: "center",
   alignItems: "flex-start",
-  minHeight: "100vh",
-  py: 6,
-  px: 2,
+  width: "100%",
+  px: 0,
+  py: 0,
 };
 
 const contentSx = {
   display: "flex",
   flexDirection: "column",
   width: "100%",
-  maxWidth: "90rem",
   gap: 3,
+  minWidth: 0,
 };
 
 const headerSx = {
   display: "flex",
   flexDirection: "column",
   gap: 1,
+};
+
+const weekNavSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "1fr", sm: "auto 1fr auto" },
+  alignItems: "center",
+  gap: 2,
+  p: 2,
+};
+
+const weekRangeTextSx = {
+  textAlign: "center",
 };
 
 const controlsCardSx = {
@@ -67,9 +74,11 @@ const controlsCardSx = {
 const dateInputSx = {
   font: "inherit",
   p: 1.5,
-  borderRadius: "4px",
+  borderRadius: "8px",
   border: "1px solid",
   borderColor: "divider",
+  minWidth: "200px",
+  backgroundColor: "white",
 };
 
 const weekGridSx = {
@@ -77,7 +86,8 @@ const weekGridSx = {
   gridTemplateColumns: "repeat(7, minmax(180px, 1fr))",
   gap: 2,
   alignItems: "start",
-  overflowX: "auto",
+  pb: 1,
+  minWidth: "max-content",
 };
 
 const dayColumnSx = {
@@ -86,6 +96,14 @@ const dayColumnSx = {
   display: "flex",
   flexDirection: "column",
   gap: 2,
+  borderRadius: 3,
+};
+
+const activeDayColumnSx = {
+  ...dayColumnSx,
+  border: "2px solid",
+  borderColor: "primary.light",
+  backgroundColor: "action.hover",
 };
 
 // -----------------------------
@@ -105,10 +123,20 @@ function addMealToWeek(currentMeals, dateKey, mealType, meal) {
 }
 
 // -----------------------------
+// Helper: Shift the selected date forward or backward
+// Used for previous/next week calendar navigation
+// -----------------------------
+function shiftDateByDays(dateString, days) {
+  const date = new Date(`${dateString}T00:00:00`);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().split("T")[0];
+}
+
+// -----------------------------
 // Main Component
 // -----------------------------
 export default function DailyLogPage() {
-  const { token } = useAuth(); // Logged‑in user's token
+  const { token } = useAuth(); // Logged-in user's token
 
   // The date selected by the user; determines which week is displayed
   const [selectedDate, setSelectedDate] = useState(
@@ -133,6 +161,10 @@ export default function DailyLogPage() {
 
   // Build Monday–Sunday objects for the selected week
   const weekDays = buildWeekDays(selectedDate);
+
+  // The first and last day of the currently displayed week
+  const weekStart = weekDays[0];
+  const weekEnd = weekDays[weekDays.length - 1];
 
   // The meal section (breakfast/lunch/etc.) currently being edited
   const activeSection = MEAL_SECTIONS.find(
@@ -192,6 +224,20 @@ export default function DailyLogPage() {
   // Close the meal picker dialog
   const handleCloseMealPicker = () => {
     setActiveSelection(null);
+  };
+
+  // -----------------------------
+  // Move backward by one week
+  // -----------------------------
+  const handlePreviousWeek = () => {
+    setSelectedDate((currentDate) => shiftDateByDays(currentDate, -7));
+  };
+
+  // -----------------------------
+  // Move forward by one week
+  // -----------------------------
+  const handleNextWeek = () => {
+    setSelectedDate((currentDate) => shiftDateByDays(currentDate, 7));
   };
 
   // -----------------------------
@@ -281,7 +327,7 @@ export default function DailyLogPage() {
         {/* Header section */}
         <Box sx={headerSx}>
           <Typography
-            variant="h4"
+            variant="h5"
             fontWeight="bold"
             sx={{ textAlign: "center" }}
           >
@@ -305,6 +351,26 @@ export default function DailyLogPage() {
           ) : null}
         </Box>
 
+        {/* Week navigation card */}
+        <Paper elevation={1} sx={weekNavSx}>
+          <Button variant="outlined" onClick={handlePreviousWeek}>
+            Previous Week
+          </Button>
+
+          <Box sx={weekRangeTextSx}>
+            <Typography variant="h6" fontWeight="bold">
+              Weekly Meal Calendar
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {weekStart.shortDate} - {weekEnd.shortDate}
+            </Typography>
+          </Box>
+
+          <Button variant="outlined" onClick={handleNextWeek}>
+            Next Week
+          </Button>
+        </Paper>
+
         {/* Date selector card */}
         <Paper elevation={1} sx={controlsCardSx}>
           <Box>
@@ -327,39 +393,47 @@ export default function DailyLogPage() {
         </Paper>
 
         {/* Week grid: one column per day */}
-        <Box sx={weekGridSx}>
-          {weekDays.map((day) => {
-            const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Box sx={weekGridSx}>
+            {weekDays.map((day) => {
+              const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();
 
-            return (
-              <Paper key={day.key} elevation={1} sx={dayColumnSx}>
-                {/* Day header */}
-                <Box>
-                  <Typography variant="h6" fontWeight="bold">
-                    {day.label}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {day.shortDate}
-                  </Typography>
-                </Box>
+              return (
+                <Paper
+                  key={day.key}
+                  elevation={1}
+                  sx={
+                    day.key === selectedDate ? activeDayColumnSx : dayColumnSx
+                  }
+                >
+                  {/* Day header */}
+                  <Box>
+                    <Typography variant="h6" fontWeight="bold">
+                      {day.label}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {day.shortDate}
+                    </Typography>
+                  </Box>
 
-                {/* Render breakfast/lunch/dinner/snacks sections */}
-                {MEAL_SECTIONS.map((section) => (
-                  <MealSection
-                    key={`${day.key}-${section.key}`}
-                    title={section.title}
-                    meals={mealsForDay[section.key]}
-                    onAdd={(event) =>
-                      handleOpenMealPicker(event, day.key, section.key)
-                    }
-                    onDelete={(meal) =>
-                      handleDeleteMeal(meal, day.key, section.key)
-                    }
-                  />
-                ))}
-              </Paper>
-            );
-          })}
+                  {/* Render breakfast/lunch/dinner/snacks sections */}
+                  {MEAL_SECTIONS.map((section) => (
+                    <MealSection
+                      key={`${day.key}-${section.key}`}
+                      title={section.title}
+                      meals={mealsForDay[section.key]}
+                      onAdd={(event) =>
+                        handleOpenMealPicker(event, day.key, section.key)
+                      }
+                      onDelete={(meal) =>
+                        handleDeleteMeal(meal, day.key, section.key)
+                      }
+                    />
+                  ))}
+                </Paper>
+              );
+            })}
+          </Box>
         </Box>
 
         {/* Dialog for selecting or creating meals */}

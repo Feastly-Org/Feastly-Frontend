@@ -27,15 +27,12 @@ export default function Navbar() {
   const pages = token
     ? [
         { label: "Dashboard", path: "/" },
-        { label: "Ingredient Search", path: "ingredients/search" },
-        { label: "Daily Log", path: "/daily-log" },
+        { label: "Ingredient Search", path: "/ingredients/search" },
         { label: "Meals", path: "/meals" },
-        { label: "Daily Total", path: "daily-totals" },
         { label: "Logout", path: "/logout" },
       ]
     : [
         { label: "Dashboard", path: "/" },
-        { label: "Daily Log", path: "/daily-log" },
         { label: "Meals", path: "/meals" },
         { label: "Login", path: "/login" },
         { label: "Register", path: "/register" },
