@@ -10,7 +10,7 @@ The goal is to make nutrition tracking simple, insightful, and personalized.
 
 [Feastly Backend](https://github.com/Feastly-Org/feastly-backend)
 
-**Deployed Site:** https://papaya-frangollo-63e6ec.netlify.app/
+[Deployed Site](https://papaya-frangollo-63e6ec.netlify.app/)
 
 ---
 
