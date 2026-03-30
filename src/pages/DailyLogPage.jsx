@@ -28,12 +28,7 @@ import {
 // These keep JSX clean and make layout easy to maintain
 // -----------------------------
 const pageSx = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "flex-start",
   width: "100%",
-  px: 0,
-  py: 0,
 };
 
 const contentSx = {
@@ -44,18 +39,13 @@ const contentSx = {
   minWidth: 0,
 };
 
-const headerSx = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 1,
-};
-
 const weekNavSx = {
   display: "grid",
   gridTemplateColumns: { xs: "1fr", sm: "auto 1fr auto" },
   alignItems: "center",
   gap: 2,
-  p: 2,
+  p: { xs: 2, sm: 3 },
+  borderRadius: 3,
 };
 
 const weekRangeTextSx = {
@@ -68,35 +58,42 @@ const controlsCardSx = {
   justifyContent: "space-between",
   alignItems: { xs: "flex-start", sm: "center" },
   gap: 2,
-  p: 2,
+  p: { xs: 2, sm: 3 },
+  borderRadius: 3,
 };
 
 const dateInputSx = {
   font: "inherit",
   p: 1.5,
-  borderRadius: "8px",
+  borderRadius: "10px",
   border: "1px solid",
   borderColor: "divider",
-  minWidth: "200px",
+  minWidth: { xs: "100%", sm: "220px" },
   backgroundColor: "white",
+};
+
+const weekGridWrapperSx = {
+  width: "100%",
+  overflowX: "auto",
+  pb: 1,
 };
 
 const weekGridSx = {
   display: "grid",
-  gridTemplateColumns: "repeat(7, minmax(180px, 1fr))",
+  gridTemplateColumns: "repeat(7, minmax(220px, 1fr))",
   gap: 2,
   alignItems: "start",
-  pb: 1,
   minWidth: "max-content",
 };
 
 const dayColumnSx = {
-  minWidth: "180px",
+  minWidth: "220px",
   p: 2,
   display: "flex",
   flexDirection: "column",
   gap: 2,
   borderRadius: 3,
+  backgroundColor: "#ffffff",
 };
 
 const activeDayColumnSx = {
@@ -104,6 +101,12 @@ const activeDayColumnSx = {
   border: "2px solid",
   borderColor: "primary.light",
   backgroundColor: "action.hover",
+};
+
+const errorTextSx = {
+  mt: -1,
+  mb: 1,
+  textAlign: "center",
 };
 
 // -----------------------------
@@ -324,32 +327,12 @@ export default function DailyLogPage() {
   return (
     <Box sx={pageSx}>
       <Box sx={contentSx}>
-        {/* Header section */}
-        <Box sx={headerSx}>
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            sx={{ textAlign: "center" }}
-          >
-            Daily Log
+        {/* Error message */}
+        {error ? (
+          <Typography color="error" sx={errorTextSx}>
+            {error}
           </Typography>
-
-          <Typography sx={{ textAlign: "center" }}>
-            Build your whole week from Monday through Sunday. Each day has its
-            own breakfast, lunch, dinner, and snacks log.
-          </Typography>
-
-          <Typography color="text.secondary" sx={{ textAlign: "center" }}>
-            Meals are saved automatically as soon as you add or delete them.
-          </Typography>
-
-          {/* Error message */}
-          {error ? (
-            <Typography color="error" sx={{ textAlign: "center" }}>
-              {error}
-            </Typography>
-          ) : null}
-        </Box>
+        ) : null}
 
         {/* Week navigation card */}
         <Paper elevation={1} sx={weekNavSx}>
@@ -393,7 +376,7 @@ export default function DailyLogPage() {
         </Paper>
 
         {/* Week grid: one column per day */}
-        <Box sx={{ width: "100%", overflowX: "auto" }}>
+        <Box sx={weekGridWrapperSx}>
           <Box sx={weekGridSx}>
             {weekDays.map((day) => {
               const mealsForDay = weeklyMeals[day.key] ?? createEmptyDayMeals();

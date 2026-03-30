@@ -24,55 +24,40 @@ export default function Dashboard() {
         </Typography>
       </Box>
 
-      <Box
+      <Paper
+        elevation={2}
         sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            lg: "320px 1fr",
-          },
-          gap: 3,
-          alignItems: "start",
+          p: { xs: 2, sm: 3 },
+          borderRadius: 3,
+          mb: 3,
         }}
       >
-        <Paper
-          elevation={2}
-          sx={{
-            p: 3,
-            borderRadius: 3,
-            position: { lg: "sticky" },
-            top: 24,
-            height: "fit-content",
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-            Daily Totals
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Your nutrition summary for today.
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-          <DailyTotals />
-        </Paper>
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+          Daily Totals
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Your nutrition summary for today.
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+        <DailyTotals />
+      </Paper>
 
-        <Paper
-          elevation={2}
-          sx={{
-            p: { xs: 2, sm: 3 },
-            borderRadius: 3,
-            minWidth: 0,
-          }}
-        >
-          <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
-            Daily Log
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Plan and manage your meals for the week.
-          </Typography>
-          <Divider sx={{ mb: 3 }} />
-          <DailyLogPage />
-        </Paper>
-      </Box>
+      <Paper
+        elevation={2}
+        sx={{
+          p: { xs: 2, sm: 3 },
+          borderRadius: 3,
+        }}
+      >
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+          Daily Log
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Plan and manage your meals for the week.
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+        <DailyLogPage />
+      </Paper>
     </Box>
   );
 }
