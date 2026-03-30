@@ -74,26 +74,24 @@ const dateInputSx = {
 
 const weekGridWrapperSx = {
   width: "100%",
-  overflowX: "auto",
-  pb: 1,
+  overflowX: "hidden",
 };
 
 const weekGridSx = {
   display: "grid",
-  gridTemplateColumns: "repeat(7, minmax(220px, 1fr))",
+  gridTemplateColumns: "repeat(7, 1fr)",
   gap: 2,
   alignItems: "start",
-  minWidth: "max-content",
 };
 
 const dayColumnSx = {
-  minWidth: "220px",
   p: 2,
   display: "flex",
   flexDirection: "column",
   gap: 2,
   borderRadius: 3,
   backgroundColor: "#ffffff",
+  minWidth: 0,
 };
 
 const activeDayColumnSx = {
