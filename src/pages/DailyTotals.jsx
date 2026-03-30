@@ -9,8 +9,8 @@ const MOCK_DAILY_TOTALS = {
   fat: 65,
 };
 
-/** Displays the user's daily calorie and macro totals. */
-export default function DailyTotalsPage() {
+/** Displays the user's daily calorie and macro totals as dashboard cards. */
+export default function DailyTotals() {
   const [dailyTotals, setDailyTotals] = useState({
     calories: 0,
     protein: 0,
@@ -43,148 +43,121 @@ export default function DailyTotalsPage() {
     }
   };
 
+  if (errorMessage) {
+    return <Alert severity="error">{errorMessage}</Alert>;
+  }
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        px: 2,
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr 1fr",
+          sm: "1fr 1fr",
+          md: "repeat(4, 1fr)",
+        },
+        gap: 2,
       }}
     >
-      <Box
+      {/* Calories Card */}
+      <Paper
+        elevation={3}
         sx={{
-          width: "100%",
-          maxWidth: "32rem",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
+          p: 2.5,
+          borderRadius: 3,
+          backgroundColor: "#e3f2fd",
+          textAlign: "center",
+          transition: "0.2s",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: 6,
+          },
         }}
       >
-        {/* Header */}
-        <Box sx={{ textAlign: "center", mb: 1 }}>
-          <Typography variant="h4" fontWeight="bold">
-            Daily Totals
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            View your calories and macros for the day.
-          </Typography>
-        </Box>
+        <Typography variant="subtitle2" color="text.secondary">
+          Calories
+        </Typography>
+        <Typography variant="h5" fontWeight="bold">
+          {dailyTotals.calories}
+        </Typography>
+      </Paper>
 
-        {/* Error */}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {/* Protein Card */}
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          backgroundColor: "#e8f5e9",
+          textAlign: "center",
+          transition: "0.2s",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+          Protein
+        </Typography>
+        <Typography variant="h5" fontWeight="bold">
+          {dailyTotals.protein}g
+        </Typography>
+      </Paper>
 
-        {/* Loading */}
-        {isLoading && (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
-            <CircularProgress />
-          </Box>
-        )}
+      {/* Carbs Card */}
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          backgroundColor: "#fff3e0",
+          textAlign: "center",
+          transition: "0.2s",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+          Carbs
+        </Typography>
+        <Typography variant="h5" fontWeight="bold">
+          {dailyTotals.carbs}g
+        </Typography>
+      </Paper>
 
-        {/* Macro Cards */}
-        {!isLoading && !errorMessage && (
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 2,
-            }}
-          >
-            {/* Calories */}
-            <Paper
-              elevation={3}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                backgroundColor: "#e3f2fd",
-                textAlign: "center",
-                transition: "0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 6,
-                },
-              }}
-            >
-              <Typography variant="subtitle2" color="text.secondary">
-                Calories
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {dailyTotals.calories}
-              </Typography>
-            </Paper>
-
-            {/* Protein */}
-            <Paper
-              elevation={3}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                backgroundColor: "#e8f5e9",
-                textAlign: "center",
-                transition: "0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 6,
-                },
-              }}
-            >
-              <Typography variant="subtitle2" color="text.secondary">
-                Protein
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {dailyTotals.protein}g
-              </Typography>
-            </Paper>
-
-            {/* Carbs */}
-            <Paper
-              elevation={3}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                backgroundColor: "#fff3e0",
-                textAlign: "center",
-                transition: "0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 6,
-                },
-              }}
-            >
-              <Typography variant="subtitle2" color="text.secondary">
-                Carbs
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {dailyTotals.carbs}g
-              </Typography>
-            </Paper>
-
-            {/* Fat */}
-            <Paper
-              elevation={3}
-              sx={{
-                p: 2,
-                borderRadius: 3,
-                backgroundColor: "#fce4ec",
-                textAlign: "center",
-                transition: "0.2s",
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: 6,
-                },
-              }}
-            >
-              <Typography variant="subtitle2" color="text.secondary">
-                Fat
-              </Typography>
-              <Typography variant="h5" fontWeight="bold">
-                {dailyTotals.fat}g
-              </Typography>
-            </Paper>
-          </Box>
-        )}
-      </Box>
+      {/* Fat Card */}
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          backgroundColor: "#fce4ec",
+          textAlign: "center",
+          transition: "0.2s",
+          "&:hover": {
+            transform: "translateY(-4px)",
+            boxShadow: 6,
+          },
+        }}
+      >
+        <Typography variant="subtitle2" color="text.secondary">
+          Fat
+        </Typography>
+        <Typography variant="h5" fontWeight="bold">
+          {dailyTotals.fat}g
+        </Typography>
+      </Paper>
     </Box>
   );
 }
