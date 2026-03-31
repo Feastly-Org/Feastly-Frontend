@@ -1,17 +1,13 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
-import { Menu, MenuItem } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Menu, MenuItem, Button, Tooltip, Avatar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import FoodBankIcon from "@mui/icons-material/FoodBank";
-import { Button } from "@mui/material";
-import { Tooltip } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router";
-import { Avatar } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
 import { useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
+import logo from "../../../assets/Feastly_Logo1.png";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -39,14 +35,20 @@ export default function Navbar() {
       ];
 
   return (
-    <AppBar position="sticky">
-      <Toolbar>
+    <AppBar
+      position="sticky"
+      sx={{
+        backgroundColor: "#1976d2",
+        boxShadow: 2,
+      }}
+    >
+      <Toolbar sx={{ minHeight: "72px" }}>
         {/* Small screen support */}
         <IconButton
           size="large"
           color="inherit"
           onClick={handleOpen}
-          sx={{ display: { xs: "flex", md: "none" } }}
+          sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
         >
           <MenuIcon />
         </IconButton>
@@ -55,8 +57,8 @@ export default function Navbar() {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          transformOrigin={{ vertical: "top", horizontal: "left" }}
           sx={{ display: { xs: "block", md: "none" } }}
         >
           {pages.map((page) => (
@@ -66,44 +68,59 @@ export default function Navbar() {
                 navigate(page.path);
                 handleClose();
               }}
+              sx={{
+                fontFamily: "Montserrat, sans-serif",
+                fontWeight: 500,
+              }}
             >
               {page.label}
             </MenuItem>
           ))}
         </Menu>
+
         {/* Logo */}
-        <FoodBankIcon
-          sx={{ display: { xs: "flex", md: "flex" }, mr: "1rem" }}
-        />
-        {/* App Name */}
-        <Typography
-          variant="h6"
-          noWrap
-          component="a"
-          href="/"
+        <Box
+          component="img"
+          src={logo}
+          alt="Feastly Logo"
+          onClick={() => navigate("/")}
           sx={{
-            mr: "1rem",
-            display: { xs: "flex", md: "flex" },
-            fontFamily: "monospace",
-            fontWeight: "medium",
-            letterSpacing: ".3rem",
-            color: "inherit",
-            textDecoration: "none",
+            height: 100,
+            width: "auto",
+            mr: 2,
+            cursor: "pointer",
+            objectFit: "contain",
+            "&:hover": {
+              opacity: 0.9,
+            },
           }}
-        >
-          FEASTLY
-        </Typography>
+        />
+
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
           {pages.map((page) => (
             <Button
               key={page.label}
               onClick={() => navigate(page.path)}
-              sx={{ my: "1rem", color: "white", display: "block" }}
+              sx={{
+                my: 1,
+                mx: 0.5,
+                color: "white",
+                display: "block",
+                fontFamily: "Montserrat, sans-serif",
+                fontWeight: 500,
+                textTransform: "none",
+                borderRadius: 2,
+                px: 2,
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.12)",
+                },
+              }}
             >
               {page.label}
             </Button>
           ))}
         </Box>
+
         {token && (
           <Tooltip title="Open account settings">
             <IconButton onClick={() => navigate("/account")} sx={{ p: 0 }}>
