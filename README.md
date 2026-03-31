@@ -69,7 +69,7 @@ The goal is to make nutrition tracking simple, insightful, and personalized.
 Below is the initial UI wireframe showing the layout of the application along with the schema of the database:
 
 <p align="center">
-  <img src="./assets/Wireframe.png" width="800"/>
+  <img src="./public/Wireframe.png" width="800"/>
 </p>
 
 - Dashboard with daily meals _(breakfast/lunch/dinner/snacks)_
