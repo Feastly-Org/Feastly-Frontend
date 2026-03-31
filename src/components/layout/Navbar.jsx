@@ -7,7 +7,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../auth/AuthContext";
 import { useState } from "react";
-const logo = "/public/Feastly_Logo1.png";
+const logo = "/public/feastly_logo1.png";
 
 export default function Navbar() {
   const navigate = useNavigate();
